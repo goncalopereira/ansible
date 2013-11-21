@@ -36,7 +36,7 @@
   - name: Add authorized deploy key
     action: authorized_key user=deploy key='$FILE(id_rsa.pub)'
  
- - name: Remove sudo group rights
+  - name: Remove sudo group rights
     action: lineinfile dest=/etc/sudoers regexp="^%sudo" state=absent
  
   - name: Add deploy user to sudoers
