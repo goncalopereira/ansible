@@ -1,10 +1,10 @@
 # bootstrap.yml
  
 ---
-- hosts: newservers
+- hosts: ansible
   vars:
   - ubuntu_release: raring
-  - logwatch_email: <your email addy>
+  - logwatch_email: ansibletest@goncalopereira.com
     # crypted passwords, generated on a Linux box using: 
     # echo 'import crypt,getpass; print crypt.crypt(getpass.getpass(), "$6$YOURSALT")' | python -
   - root_password: ''
@@ -19,10 +19,10 @@
     action: apt update_cache=yes
  
   - name: Upgrade APT to the lastest packages
-    action: apt upgrade=safe
+    action: apt upgrade=dist
  
-  - name: Install mosh
-    action: apt pkg=mosh state=installed
+    #  - name: Install mosh
+    #    action: apt pkg=mosh state=installed
  
   - name: Install vim
     action: apt pkg=vim state=installed
@@ -34,7 +34,7 @@
     action: user name=deploy password=$deploy_password
  
   - name: Add authorized deploy key
-    action: authorized_key user=deploy key='$FILE(id_rsa.pub)'
+    action: authorized_key user=deploy key='$FILE(config/id_rsa.pub)'
  
   - name: Remove sudo group rights
     action: lineinfile dest=/etc/sudoers regexp="^%sudo" state=absent
@@ -55,11 +55,11 @@
   - name: Make sure unattended-upgrades only installs from $ubuntu_release-security
     action: lineinfile dest=/etc/apt/apt.conf.d/50unattended-upgrades regexp="$ubuntu_release-updates" state=absent
  
-  - name: Copy debconf selections so that Postfix can configure itself non-interactively
-    copy: src=config/postfix_selections  dest=/tmp/postfix_selections
+    #  - name: Copy debconf selections so that Postfix can configure itself non-interactively
+    #    copy: src=config/postfix_selections  dest=/tmp/postfix_selections
  
-  - name: Set up Postfix to relay mail
-    action: command debconf-set-selections /tmp/postfix_selections
+    #  - name: Set up Postfix to relay mail
+    #    action: command debconf-set-selections /tmp/postfix_selections
  
   - name: Install logwatch
     action: apt pkg=logwatch state=installed
@@ -67,6 +67,9 @@
   - name: Make logwatch mail $logwatch_email daily
     action: lineinfile dest=/etc/cron.daily/00logwatch regexp="^/usr/sbin/logwatch" line="/usr/sbin/logwatch --output mail --mailto $logwatch_email --detail high" state=present create=yes
  
+  - name: Install ufw
+    action: apt pkg=ufw state=installed
+
   - name: Setup ufw
     action: shell ufw allow 22/tcp
  
