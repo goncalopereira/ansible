@@ -47,7 +47,10 @@
  
   - name: Enable ufw
     action: shell echo 'y' | ufw enable
- 
+
+  - name: Install fail2ban
+    action: apt pkg=fail2ban state=installed
+         
   handlers:
   - name: Restart ssh
     action: service name=ssh state=restarted
