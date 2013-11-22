@@ -1,0 +1,13 @@
+---
+- hosts: all
+  vars:
+  - name: Install fail2ban
+    action: apt pkg=fail2ban state=installed
+
+  - name: Disallow root SSH access
+    action: lineinfile dest=/etc/ssh/sshd_config regexp="^PermitRootLogin" line="PermitRootLogin no" state=present
+    notify: Restart ssh
+ 
+  handlers:
+  - name: Restart ssh
+    action: service name=ssh state=restarted

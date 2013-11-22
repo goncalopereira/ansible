@@ -1,0 +1,16 @@
+---
+- hosts: all
+  sudo: yes
+
+  tasks:
+  - name: Install vim
+    action: apt pkg=vim state=installed
+
+  - name: Install mosh
+    action: apt pkg=mosh state=installed
+
+  - name: Install zsh
+    action: apt pkg=zsh state=installed
+
+  - name: Add deployment user
+    action: user name=deploy shell=zsh
