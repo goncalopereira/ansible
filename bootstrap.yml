@@ -13,18 +13,6 @@
   - name: Upgrade APT to the lastest packages
     action: apt upgrade=dist
 
-  - name: Add deployment user
-    action: user name=deploy
- 
-  - name: Add authorized deploy key
-    action: authorized_key user=deploy key='$FILE(config/id_rsa.pub)'
- 
-  - name: Remove sudo group rights
-    action: lineinfile dest=/etc/sudoers regexp="^%sudo" state=absent
- 
-  - name: Add deploy user to sudoers
-    action: lineinfile dest=/etc/sudoers regexp="deploy ALL" line="deploy ALL=(ALL) NOPASSWD:ALL" state=present
- 
   - name: Disallow password authentication
     action: lineinfile dest=/etc/ssh/sshd_config regexp="^PasswordAuthentication" line="PasswordAuthentication no" state=present
     notify: Restart ssh
@@ -52,9 +40,10 @@
  
   - name: Setup ufw
     action: shell ufw allow 443/tcp
- 
-  - name: Setup ufw
-    action: shell ufw allow 60023/udp
+
+  - name: Install mosh
+    action: apt pkg=mosh state=present
+    notify: ufw for mosh 
  
   - name: Enable ufw
     action: shell echo 'y' | ufw enable
@@ -62,3 +51,5 @@
   handlers:
   - name: Restart ssh
     action: service name=ssh state=restarted
+  - name: ufw for mosh
+    action: shell ufw allow 60000:61000/udp
