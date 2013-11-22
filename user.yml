@@ -21,7 +21,7 @@
 
   - name: Add zsh to $user
     shell: chsh -s /bin/zsh $user
-
+     
   - name: Install ruby
     action: apt pkg=ruby state=installed
 
