@@ -19,6 +19,9 @@
   - name: Install zsh
     action: apt pkg=zsh state=installed
 
+  - name: Add zsh to $user
+    shell: chsh -s /bin/zsh $user
+
   - name: Install ruby
     action: apt pkg=ruby state=installed
 
@@ -27,5 +30,9 @@
 
   - name: Install homesick
     action: gem name=homesick state=latest
-      
 
+  - name: Install git
+    action: apt pkg=git state=installed
+
+  - name: Oh-My-Zsh
+    action: git repo=git://github.com/robbyrussell/oh-my-zsh.git dest=/home/$user/.oh-my-zsh    
