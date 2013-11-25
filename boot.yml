@@ -40,10 +40,6 @@
  
   - name: Setup ufw
     action: shell ufw allow 443/tcp
-
-  - name: Install mosh
-    action: apt pkg=mosh state=present
-    notify: ufw for mosh 
  
   - name: Enable ufw
     action: shell echo 'y' | ufw enable
@@ -54,5 +50,3 @@
   handlers:
   - name: Restart ssh
     action: service name=ssh state=restarted
-  - name: ufw for mosh
-    action: shell ufw allow 60000:61000/udp
