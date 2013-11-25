@@ -50,6 +50,9 @@
   - name: Install psad
     action: apt pkg=psad state=installed
 
+  - name: Start psad
+    action: shell iptables -A INPUT -j LOG
+
   handlers:
   - name: Restart ssh
     action: service name=ssh state=restarted
