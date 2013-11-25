@@ -1,0 +1,14 @@
+# bootstrap.yml
+ 
+---
+- hosts: all
+ 
+  tasks:
+  - name: Install ufw
+    action: apt pkg=ufw state=installed
+
+  - name: Setup ufw
+    action: shell ufw allow 80/tcp
+
+  - name: Enable ufw
+    action: shell echo 'y' | ufw enable

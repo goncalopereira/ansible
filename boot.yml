@@ -5,7 +5,7 @@
   vars:
   - ubuntu_release: raring
   - logwatch_email: ansibletest@goncalopereira.com
- 
+  - config_path: roles/boot
   tasks:
   - name: Update APT package cache
     action: apt update_cache=yes
@@ -21,7 +21,7 @@
     action: apt pkg=unattended-upgrades state=present
  
   - name: Adjust APT update intervals
-    action: copy src=config/apt_periodic dest=/etc/apt/apt.conf.d/10periodic
+    action: copy src=$config_path/apt_periodic dest=/etc/apt/apt.conf.d/10periodic
  
   - name: Make sure unattended-upgrades only installs from $ubuntu_release-security
     action: lineinfile dest=/etc/apt/apt.conf.d/50unattended-upgrades regexp="$ubuntu_release-updates" state=absent

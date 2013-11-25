@@ -1,2 +1,3 @@
-- include: bootstrap.yml
+- include: boot.yml
 - include: user.yml
+- include: web.yml
