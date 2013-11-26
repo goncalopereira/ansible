@@ -1,5 +1,3 @@
-# bootstrap.yml
- 
 ---
 - hosts: all
   vars:
@@ -7,16 +5,11 @@
   - logwatch_email: logwatch@goncalopereira.com
   - files_path: roles/boot/files
   - tasks_path: roles/boot/tasks
+  - handlers_path: roles/boot/handlers
     
-  - include: $tasks_path/apt.yml tasks_path=$tasks_path
-  
   tasks:  
   - include: $tasks_path/apt.yml tasks_path=$tasks_path
-  
-  - name: Disallow password authentication
-    action: lineinfile dest=/etc/ssh/sshd_config regexp="^PasswordAuthentication" line="PasswordAuthentication no" state=present
-    notify: Restart ssh
- 
+
   - name: Install logwatch
     action: apt pkg=logwatch state=installed
  
@@ -25,13 +18,6 @@
  
   - name: Install ufw
     action: apt pkg=ufw state=installed
-
-  - name: Setup ufw for ssh
-    action: shell ufw allow $item/tcp
-    with_items: [ 22, 443 ]
- 
-  - name: Enable ufw
-    action: shell echo 'y' | ufw enable
 
   - name: Install fail2ban
     action: apt pkg=fail2ban state=installed
@@ -42,6 +28,11 @@
   - name: Start psad
     action: shell iptables -A INPUT -j LOG
 
+  - include: $tasks_path/apt.yml tasks_path=$tasks_path
+  - include: $tasks_path/ssh.yml
+ 
+  - name: Enable ufw
+    action: shell echo 'y' | ufw enable
+ 
   handlers:
-  - name: Restart ssh
-    action: service name=ssh state=restarted
+  - include: $handlers_path/ssh.yml

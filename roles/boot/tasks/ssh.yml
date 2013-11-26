@@ -1,0 +1,7 @@
+  - name: Disallow password authentication
+    action: lineinfile dest=/etc/ssh/sshd_config regexp="^PasswordAuthentication" line="PasswordAuthentication no" state=present
+    notify: Restart ssh
+ 
+  - name: Setup ufw for ssh
+    action: shell ufw allow $item/tcp
+    with_items: [ 22, 443 ]
