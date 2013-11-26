@@ -8,11 +8,8 @@
     action: user name=$user
 
   - name: Add authorized key
-    action: authorized_key user=$user key='$FILE($config_path/7d_id_rsa.pub)'
-  - name: Add authorized key gh
-    action: authorized_key user=$user key='$FILE($config_path/gh_id_rsa.pub)'
-  - name: Add gp key  
-    action: authorized_key user=$user key='$FILE($config_path/gp_id_rsa.pub)'
+    action: authorized_key user=$user key='$FILE($config_path/$item)'
+    with_items: [ 7d_id_rsa.pub, gh_id_rsa.pub, gp_id_rsa.pub ]
   
   - name: Add user to sudoers
     action: lineinfile dest=/etc/sudoers regexp="$user ALL" line="$user ALL=(ALL) NOPASSWD:ALL" state=present
