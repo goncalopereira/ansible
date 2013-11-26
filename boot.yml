@@ -35,11 +35,9 @@
   - name: Install ufw
     action: apt pkg=ufw state=installed
 
-  - name: Setup ufw
-    action: shell ufw allow 22/tcp
- 
-  - name: Setup ufw
-    action: shell ufw allow 443/tcp
+  - name: Setup ufw for ssh
+    action: shell ufw allow $item/tcp
+    with_items: [ 22, 443 ]
  
   - name: Enable ufw
     action: shell echo 'y' | ufw enable
