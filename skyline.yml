@@ -1,7 +1,14 @@
 - hosts: all
   vars: 
-    - skyline: { version: master, path: /srv/skyline, repo: 'https://github.com/etsy/skyline.git' }
+    - skyline: {
+      version: master,
+      path: /srv/skyline,
+      repo: 'https://github.com/etsy/skyline.git' }
     - redis_server: { name: redis-server, version: '2:2.6.13-1' }
+    - graphite: { url: 'http://localhost', carbon_port: 2003 }
+    - webapp: { port: 1500, ip: 0.0.0.0 }
+    - horizon: { pickle_port: 2024, udp_port: 2025 }
+    - oculus: { url: 'http://your_oculus_host.com' }
 
   tasks:
     - name: Install tools
@@ -14,8 +21,8 @@
     - name: Checkout Skyline 
       action: git repo={{ skyline.repo }} dest={{ skyline.path }} version={{ skyline.version }}
 
-    - name: Update Skyline settings.py
-      action: copy src=roles/skyline/files/settings.py dest={{ skyline.path }}/src/settings.py
+    - name: Update Skyline settings.py template
+      template: src=roles/skyline/templates/settings.py dest={{ skyline.path }}/src/settings.py
 
     - name: Create Skyline log directories
       action: file path={{ item }} state=directory

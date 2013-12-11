@@ -32,16 +32,16 @@ MINI_DURATION = 3600
 
 # If you have a Graphite host set up, set this metric to get graphs on
 # Skyline and Horizon. Include http://.
-GRAPHITE_HOST = 'http://your_graphite_host.com'
+GRAPHITE_HOST = "{{ graphite.url }}"
 
 # If you have a Graphite host set up, set its Carbon port.
-CARBON_PORT = 2003
+CARBON_PORT = {{ graphite.carbon_port }}
 
 # If you have Oculus set up, set this metric to set the clickthrough on the
 # webapp. Include http://. If you don't want to use Oculus, set this to an
 # empty string. If you comment this out, Skyline won't work! Speed improvements
 # will occur when Oculus support is disabled.
-OCULUS_HOST = 'http://your_oculus_host.com'
+OCULUS_HOST = "{{ oculus.url }}"
 
 """
 Analyzer settings
@@ -167,10 +167,10 @@ WORKER_PROCESSES = 2
 
 # This is the port that listens for Graphite pickles over TCP, sent by Graphite's
 # carbon-relay agent.
-PICKLE_PORT = 2024
+PICKLE_PORT = {{ horizon.pickle_port }}
 
 # This is the port that listens for Messagepack-encoded UDP packets.
-UDP_PORT = 2025
+UDP_PORT = {{ horizon.udp_port }}
 
 # This is how big a 'chunk' of metrics will be before they are added onto
 # the shared queue for processing into Redis. If you are noticing that Horizon
@@ -224,7 +224,7 @@ Webapp settings
 """
 
 # The IP address for the webapp
-WEBAPP_IP = '0.0.0.0'
+WEBAPP_IP = "{{ webapp.ip }}"
 
 # The port for the webapp
-WEBAPP_PORT = 1500
+WEBAPP_PORT = {{ webapp.port }}
