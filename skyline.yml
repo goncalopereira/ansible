@@ -1,7 +1,7 @@
 - hosts: all
   vars: 
     - skyline: { version: master, path: /srv/skyline, repo: 'https://github.com/etsy/skyline.git' }
-    - redis_server: { name: redis-server, version: '2:2.6.13-1', redis_conf: /etc/redis/redis.conf }
+    - redis_server: { name: redis-server, version: '2:2.6.13-1' }
 
   tasks:
     - name: Install tools
@@ -13,6 +13,13 @@
 
     - name: Checkout Skyline 
       action: git repo={{ skyline.repo }} dest={{ skyline.path }} version={{ skyline.version }}
+
+    - name: Update Skyline settings.py
+      action: copy src=roles/skyline/files/settings.py dest={{ skyline.path }}/src/settings.py
+
+    - name: Create Skyline log directories
+      action: file path={{ item }} state=directory
+      with_items: [ /var/log/skyline, /var/run/skyline ]
 
     - name: Install {{ skyline.path }}/requirements.txt with pip
       action: pip requirements={{ skyline.path }}/requirements.txt
@@ -34,8 +41,12 @@
       action: apt pkg={{ redis_server.name }}={{ redis_server.version }} state=installed
 
     - name: Update redis.conf
-      action: copy src=roles/skyline/files/redis.conf dest={{ redis_server.redis_conf }}
+      action: copy src=roles/skyline/files/redis.conf dest=/etc/redis/redis.conf
       notify: restart redis
+
+    - name: Start Skyline
+      command: "{{ skyline.path }}/bin/{{ item }} start"
+      with_items: [ horizon.d, analyzer.d, webapp.d ]
 
   handlers:
     - name: restart redis
