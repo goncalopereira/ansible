@@ -1,30 +1,42 @@
 - hosts: all
   vars: 
-    - skyline_version: master
-    - skyline_path:  /srv/skyline
+    - skyline: { version: master, path: /srv/skyline, repo: 'https://github.com/etsy/skyline.git' }
+    - redis_server: { name: redis-server, version: '2:2.6.13-1', redis_conf: /etc/redis/redis.conf }
 
   tasks:
     - name: Install tools
-      action: apt pkg={{ item.name }}={{ item.version }} state=installed
+      action: apt pkg={{ item.name }} state=installed
       with_items: 
-        - { name: python-dev, version: 2.7.3-0ubuntu2.2 }
-        - { name: python-pip, version: 1.0-1build1 }
+        - { name: python-dev }
+        - { name: python-pip }
+        - { name: git }
 
     - name: Checkout Skyline 
-      action: git repo=https://github.com/etsy/skyline.git dest={{ skyline_path }} version={{ skyline_version }}
+      action: git repo={{ skyline.repo }} dest={{ skyline.path }} version={{ skyline.version }}
 
-    - name: Install {{ skyline_path }}/requirements.txt with pip
-      action: pip requirements=$skyline_path/requirements.txt
+    - name: Install {{ skyline.path }}/requirements.txt with pip
+      action: pip requirements={{ skyline.path }}/requirements.txt
 
     - name: Install remaining dependencies with pip
-      action: pip name={{ item.name }}
+      action: pip name={{ item.name }} version={{ item.version }}
       with_items:
         - { name: patsy, version: 0.2.1 }
         - { name: msgpack_python, version: 0.4.0 }
 
     - name: Install python dependencies
-      action: apt pkg={{ item.name }}={{ item.version }} state=installed
+      action: apt pkg={{ item.name }} state=installed
       with_items: 
-        - { name: python-numpy, version: '1:1.6.1-6ubuntu1' }
-        - { name: python-scipy, version: 0.9.0+dfsg1-1ubuntu2 }
-        - { name: python-scikits.statsmodels, version: 0.3.1-3ubuntu1 }
+        - { name: python-numpy }
+        - { name: python-scipy }
+        - { name: python-scikits.statsmodels }
+
+    - name: Install redis
+      action: apt pkg={{ redis_server.name }}={{ redis_server.version }} state=installed
+
+    - name: Update redis.conf
+      action: copy src=roles/skyline/files/redis.conf dest={{ redis_server.redis_conf }}
+      notify: restart redis
+
+  handlers:
+    - name: restart redis
+      action: service name={{ redis_server.name }} state=restarted
