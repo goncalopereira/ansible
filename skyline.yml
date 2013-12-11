@@ -21,9 +21,6 @@
     - name: Checkout Skyline 
       action: git repo={{ skyline.repo }} dest={{ skyline.path }} version={{ skyline.version }}
 
-    - name: Update Skyline settings.py template
-      template: src=roles/skyline/templates/settings.py.j2 dest={{ skyline.path }}/src/settings.py
-
     - name: Create Skyline log directories
       action: file path={{ item }} state=directory
       with_items: [ /var/log/skyline, /var/run/skyline ]
@@ -46,15 +43,24 @@
 
     - name: Install redis
       action: apt pkg={{ redis_server.name }}={{ redis_server.version }} state=installed
+      notify: restart redis
 
     - name: Update redis.conf
       action: copy src=roles/skyline/files/redis.conf dest=/etc/redis/redis.conf
       notify: restart redis
 
-    - name: Start Skyline
-      command: "{{ skyline.path }}/bin/{{ item }} start"
-      with_items: [ horizon.d, analyzer.d, webapp.d ]
+    - name: Update Skyline settings.py template
+      template: src=roles/skyline/templates/settings.py.j2 dest={{ skyline.path }}/src/settings.py
+      notify: 
+        - kill python
+        - start skyline
 
   handlers:
     - name: restart redis
       action: service name={{ redis_server.name }} state=restarted
+
+    - name: kill python #no way to know if apps run...
+      command: "pkill -9 python"
+    - name: start skyline
+      command: "{{ skyline.path }}/bin/{{ item }} start"
+      with_items: [ horizon.d, analyzer.d, webapp.d ]
