@@ -22,7 +22,7 @@
       action: git repo={{ skyline.repo }} dest={{ skyline.path }} version={{ skyline.version }}
 
     - name: Update Skyline settings.py template
-      template: src=roles/skyline/templates/settings.py dest={{ skyline.path }}/src/settings.py
+      template: src=roles/skyline/templates/settings.py.j2 dest={{ skyline.path }}/src/settings.py
 
     - name: Create Skyline log directories
       action: file path={{ item }} state=directory
