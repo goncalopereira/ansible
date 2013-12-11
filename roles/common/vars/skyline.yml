@@ -1,0 +1,8 @@
+skyline: {
+      version: master,
+      path: /srv/skyline,
+      repo: 'https://github.com/etsy/skyline.git' }
+redis_server: { name: redis-server, version: '2:2.6.13-1' }
+webapp: { port: 1500, ip: 0.0.0.0 }
+horizon: { pickle_port: 2024, udp_port: 2025 }
+oculus: { url: 'http://your_oculus_host.com' }
