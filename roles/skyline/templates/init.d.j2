@@ -20,6 +20,12 @@ DAEMON_ARGS="start"
 PIDFILE=/var/run/$NAME.pid
 SCRIPTNAME=/etc/init.d/$NAME
 
+echo $NAME
+echo $DAEMON
+echo $SCRIPTNAME
+echo $DAEMON_ARGS
+echo $PIDFILE
+
 # Exit if the package is not installed
 [ -x "$DAEMON" ] || exit 0
 

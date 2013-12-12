@@ -48,20 +48,19 @@
         - restart skyline
 
     - name: Update skyline init.d templates
-      template: src=roles/skyline/templates/init.d.j2 dest=/etc/init.d/{{ item }}
-      with_items: [ horizon.d, analyzer.d, webapp.d ]
+      action: file src={{ skyline.path }}/bin/{{ item }} dest=/etc/init.d/{{ item }} mode=555
+      with_items: skyline.services
       notify: 
-      - make skyline init.d executable
       - restart skyline
+
+    - name: start skyline 
+      action: service name={{ item }} state=started
+      with_items: skyline.services
 
   handlers:
     - name: restart redis
       action: service name={{ redis_server.name }} state=restarted
-  
-    - name: make skyline init.d executable
-      action: file path=/etc/init.d/{{ item }} mode=555
-      with_items: [ horizon.d, analyzer.d, webapp.d ]
 
     - name: restart skyline
       action: service name={{ item }} state=restarted
-      with_items: [ horizon.d, analyzer.d, webapp.d ]
+      with_items: skyline.services
