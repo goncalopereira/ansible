@@ -45,15 +45,23 @@
     - name: Update Skyline settings.py template
       template: src=roles/skyline/templates/settings.py.j2 dest={{ skyline.path }}/src/settings.py
       notify: 
-        - kill python
-        - start skyline
+        - restart skyline
+
+    - name: Update skyline init.d templates
+      template: src=roles/skyline/templates/init.d.j2 dest=/etc/init.d/{{ item }}
+      with_items: [ horizon.d, analyzer.d, webapp.d ]
+      notify: 
+      - make skyline init.d executable
+      - restart skyline
 
   handlers:
     - name: restart redis
       action: service name={{ redis_server.name }} state=restarted
+  
+    - name: make skyline init.d executable
+      action: file path=/etc/init.d/{{ item }} mode=555
+      with_items: [ horizon.d, analyzer.d, webapp.d ]
 
-    - name: kill python #no way to know if apps run...
-      command: "pkill -9 python"
-    - name: start skyline
-      command: "{{ skyline.path }}/bin/{{ item }} start"
+    - name: restart skyline
+      action: service name={{ item }} state=restarted
       with_items: [ horizon.d, analyzer.d, webapp.d ]
