@@ -1,17 +1,8 @@
-# bootstrap.yml
- 
----
 - hosts: all
  
   tasks:
   - name: NGINX
     action: apt pkg=nginx state=installed
       
-  - name: Install ufw
-    action: apt pkg=ufw state=installed
-
-  - name: Setup ufw
+  - name: Setup firewall for web
     action: shell ufw allow 80/tcp
-
-  - name: Enable ufw
-    action: shell echo 'y' | ufw enable
