@@ -1,3 +1,6 @@
 [submodule "skyline-playbook"]
 	path = skyline-playbook
 	url = git@github.com:goncalopereira/skyline-playbook.git
+[submodule "statsd-graphite-playbook"]
+	path = statsd-graphite-playbook
+	url = git@github.com:goncalopereira/statsd-graphite-playbook.git
