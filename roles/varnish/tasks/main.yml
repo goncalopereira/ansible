@@ -1,0 +1,7 @@
+- name: Update varnish VCL
+  action: copy src=default.vcl dest=/etc/varnish/default.vcl
+  notify: restart varnish
+
+- name: Update default varnish
+  action: copy src=varnish dest=/etc/default/varnish
+  notify: restart varnish

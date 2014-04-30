@@ -1,0 +1,4 @@
+- hosts: varnish
+  remote_user: root
+  roles:
+    - varnish
