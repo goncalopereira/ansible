@@ -7,8 +7,3 @@
   - name: Install fail2ban
     action: apt pkg=fail2ban state=installed
 
-  - name: Install psad
-    action: apt pkg=psad state=installed
-
-  - name: Start psad
-    action: shell iptables -A INPUT -j LOG
