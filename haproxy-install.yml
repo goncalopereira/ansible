@@ -1,4 +1,5 @@
-- hosts: all
+- hosts: haproxy
+  remote_user: root
  
   tasks:
   - name: HaProxy
