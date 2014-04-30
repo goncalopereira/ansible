@@ -1,0 +1,8 @@
+- hosts: all
+ 
+  tasks:
+  - name: HaProxy
+    action: apt pkg=haproxy state=installed
+      
+  - name: Setup firewall for web
+    action: shell ufw allow 80/tcp

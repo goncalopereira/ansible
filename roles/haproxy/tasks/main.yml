@@ -1,0 +1,7 @@
+- name: Update haproxy config
+  action: copy src=haproxy.cfg dest=/etc/haproxy/haproxy.cfg
+  notify: restart haproxy
+
+- name: Update default haproxy
+  action: copy src=haproxy dest=/etc/default/haproxy
+  notify: restart haproxy
