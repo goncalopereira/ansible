@@ -1,0 +1,12 @@
+- hosts: sensu
+  remote_user: root
+
+  tasks:
+  - name: Redis
+    action: apt pkg=redis-server state=installed
+ 
+  - name: RabbitMq
+    action: apt pkg=rabbitmq-server state=installed
+ 
+  - name: Setup firewall for web
+    action: shell ufw allow 80/tcp
